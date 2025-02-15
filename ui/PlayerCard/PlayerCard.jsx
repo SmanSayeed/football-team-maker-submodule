@@ -22,7 +22,6 @@ const PlayerCard = ({ player, onClick }) => {
     return `${value}${currency || ''}${numeral || ''}`;
   };
 
-  // Get validated image URLs
   const playerImage = validateImageUrl(player.playerImage);
   const clubImage = validateImageUrl(player.clubImage);
   const countryImage = validateImageUrl(player.countryImage);
@@ -31,28 +30,28 @@ const PlayerCard = ({ player, onClick }) => {
     <Card 
       onClick={onClick}
       sx={{ 
-        cursor: 'pointer',
-        transition: 'transform 0.2s',
-        '&:hover': {
-          transform: 'scale(1.02)'
-        },
+        width: 240,
         height: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 3
+        },
+        borderRadius: 2,
+        backgroundColor: 'background.paper'
       }}
     >
-      <Box sx={{ position: 'relative', pt: '56.25%' /* 16:9 aspect ratio */ }}>
+      {/* Player Image Section */}
+      <Box sx={{ height: 200, position: 'relative', bgcolor: 'grey.100' }}>
         {playerImage ? (
           <CardMedia
             component="img"
-            height="200"
             image={playerImage}
             alt={player.playerName || 'Player'}
             sx={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
               height: '100%',
               objectFit: 'cover'
             }}
@@ -61,91 +60,124 @@ const PlayerCard = ({ player, onClick }) => {
             }}
           />
         ) : (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bgcolor: 'grey.200'
-            }}
-          >
-            <PersonIcon sx={{ fontSize: 60, color: 'grey.400' }} />
+          <Box sx={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <PersonIcon sx={{ fontSize: 64, color: 'grey.400' }} />
           </Box>
         )}
       </Box>
 
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h6" component="div" noWrap>
+      {/* Content Section */}
+      <CardContent sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Player Name */}
+        <Typography 
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            mb: 1.5,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
           {player.playerName || 'Unknown Player'}
         </Typography>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1 }}>
-          {clubImage ? (
+
+        {/* Club Info */}
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          mb: 1.5,
+          gap: 1 
+        }}>
+          {clubImage && (
             <Box
               component="img"
               src={clubImage}
               alt={player.clubName || 'Club'}
               sx={{ 
-                width: 20, 
-                height: 20,
+                width: 24,
+                height: 24,
                 objectFit: 'contain'
               }}
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
             />
-          ) : null}
-          <Typography variant="body2" color="text.secondary" noWrap>
+          )}
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
             {player.clubName || 'Unknown Club'}
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1 }}>
-          {countryImage ? (
-            <Box
-              component="img"
-              src={countryImage}
-              alt="Country"
-              sx={{ 
-                width: 20, 
-                height: 15,
-                objectFit: 'contain'
-              }}
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          ) : null}
-          <Typography variant="body2" color="text.secondary">
-            Age: {player.ageAtThisTime || 'N/A'}
-          </Typography>
-        </Box>
-
+        {/* Position and Age */}
         <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          mt: 'auto'
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+          mb: 'auto'
         }}>
-          <Chip 
+          <Chip
             label={player.mainPosition || 'Unknown'}
             size="small"
             color="primary"
             variant="outlined"
           />
-          <Typography variant="body2" fontWeight="bold">
-            {formatMarketValue(
-              player.marketValueAtThisTime,
-              player.marketValueAtThisTimeCurrency,
-              player.marketValueAtThisTimeNumeral
+          
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            gap: 0.5
+          }}>
+            {countryImage && (
+              <Box
+                component="img"
+                src={countryImage}
+                alt="Country"
+                sx={{ 
+                  width: 20,
+                  height: 14,
+                  objectFit: 'cover'
+                }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
             )}
-          </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Age: {player.ageAtThisTime || 'N/A'}
+            </Typography>
+          </Box>
         </Box>
+
+        {/* Market Value */}
+        <Typography 
+          variant="subtitle1"
+          color="primary"
+          sx={{ 
+            mt: 2,
+            fontWeight: 600,
+            textAlign: 'right'
+          }}
+        >
+          {formatMarketValue(
+            player.marketValueAtThisTime,
+            player.marketValueAtThisTimeCurrency,
+            player.marketValueAtThisTimeNumeral
+          )}
+        </Typography>
       </CardContent>
     </Card>
   );
