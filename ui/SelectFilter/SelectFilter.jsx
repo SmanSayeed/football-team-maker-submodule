@@ -28,7 +28,7 @@ const SelectFilter = ({
         <MenuItem value="">
           <em>None</em>
         </MenuItem>
-        {options.map((option) => (
+        {options && options.length>1 && options.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>
