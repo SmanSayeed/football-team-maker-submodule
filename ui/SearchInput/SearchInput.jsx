@@ -2,7 +2,7 @@
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchInput = ({ placeholder, value, onChange, ...props }) => {
+const SearchInput = ({ placeholder, value, onChange, InputProps, sx, ...props }) => {
   return (
     <TextField
       placeholder={placeholder || "Search..."}
@@ -14,14 +14,17 @@ const SearchInput = ({ placeholder, value, onChange, ...props }) => {
         '& .MuiOutlinedInput-root': {
           borderRadius: '20px',
           backgroundColor: 'white',
-        }
+          transition: 'all 0.2s ease',
+        },
+        ...sx
       }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon />
+            <SearchIcon color="action" />
           </InputAdornment>
         ),
+        ...InputProps
       }}
       {...props}
     />
